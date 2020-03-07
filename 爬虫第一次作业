@@ -1,1 +1,35 @@
+# exercise-for-python
+'''
+1.选取需要的Url；（豆瓣上我感兴趣的话题？）
+2.使用Requests库请求网站；
+3.使用Get方式抓取数据；
+4.最后把抓取数据导入文本。
+'''
 
+# -*- coding: utf-8 -*-
+from urllib import request
+import requests
+from bs4 import BeautifulSoup
+
+#找到豆瓣发现小组的网页
+url='https://www.douban.com/group/explore?tag=%E5%85%B4%E8%B6%A3'
+#设置请求头
+headers={
+    'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36'
+}
+response = requests.get(url,headers=headers)
+strhtml=requests.get(url,headers=headers)
+soup=BeautifulSoup(strhtml.text,'lxml')
+#定位所需数据的路径并引用
+#content > div > div.article > div.group-list > div:nth-child(17) > div.content > div.title > h3 > a
+data=soup.select('#content > div > div.article > div.group-list > div> div.content > div.title > h3 > a')
+#提取数据并导出
+for item in data :
+    result={
+            'title':item.get_text(),
+            'link':item.get('href')
+            }
+    print(result)
+    doc = open('abc.txt', 'w')
+    print(result,file=doc)
+    doc.close()
